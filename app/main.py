@@ -10,7 +10,6 @@ app = FastAPI(title="CMPE 272 GitHub Issues Service")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     request_id = str(uuid.uuid4())
@@ -27,7 +26,6 @@ async def log_requests(request: Request, call_next):
 
     response.headers["X-Request-ID"] = request_id
     return response
-
 
 @app.get("/healthz")
 def healthz():

@@ -1,0 +1,43 @@
+openapi: 3.1.0
+info:
+  title: Sample API
+  description: API description in Markdown.
+  version: 1.0.0
+paths: {
+  /issues:
+    get:
+      parameters: 
+        - {name: state, in: query, schema: {type: string, enum: [open, closed, all], default: open}},
+        - {name: labels, in: query, style: form, explode: false, schema: {type: array, items: {type: string}}},
+        - {name: page, in: query, schema: {type: integer, default: 1}},
+        - {name: per_page, in: query, schema: {type: integer, default: 30}},
+      responses:
+        '200': {description: OK, content: {application/json:
+        {schema: {type: array, items: {$ref: '#/components/schemas/Issue'}}}}},
+    post:
+       requestBody: {required: true, content: {application/json:
+      {schema: {$ref: '#/components/schemas/NewIssue'}}}},
+       responses:
+         '201': {description: Created, headers: {Location: {schema: {type: string, format: uri}}},
+         content: {application/json: {schema: {$ref: '#/components/schemas/Issue'}}}},
+  /issues/{number}:
+    get:
+      parameters: [{name: number, in: path, required: true, schema: {type: integer, minimum: 1}}],
+      responses: {'200': {description: OK, content: {application/json: {schema: {$ref: '#/components/schemas/Issue'}}}},
+      '404': {description: Not found}},
+    patch:
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/NewIssue'}}}},
+      responses: {'200': {description: OK, content: {application/json: {schema: {$ref: '#/components/schemas/Issue'}}}},
+      '404': {description: Not found}},
+  /issues/{number}/comments:
+    post:
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/NewComment'}}}},
+      responses: {'201': {description: Created, content: {application/json: {schema: {$ref: '#/components/schemas/Comment'}}}}},
+}
+components:
+  securitySchemes: { bearerAuth: {type: http, scheme: bearer} }
+  schemas:
+    NewIssue: {type: object, required: [title], properties: {title: {type: string}, body: {type: string}, labels: {type: array, items: {type: string}}}}
+    NewComment: {type: object, required: [body], properties: {body: {type: string}}}
+    Comment: {type: object, required: [body], properties: {id: {type: integer}, body: {type: string}, user: {type: string}, created_at: {type: string, format: date-time}, html_url: {type: string, format: uri}}}
+    Issue: {type: object, required: [number, title], properties: {number: {type: integer}, title: {type: string}, body: {type: string}, state: {type: string, enum: [open, closed]}, labels: {type: array, items: {type: string}}, created_at: {type: string, format: date-time}, updated_at: {type: string, format: date-time}}} 
