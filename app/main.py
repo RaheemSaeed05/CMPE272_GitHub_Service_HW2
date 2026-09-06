@@ -7,14 +7,28 @@ from fastapi import FastAPI, Request, Response, Query
 from app import config
 import json
 from app.model import NewIssue, UpdateIssue, NewComment, IssueState
-
-
-app = FastAPI(title="CMPE 272 GitHub Issues Service")
+from contextlib import asynccontextmanager
+import ngrok
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 conf = config.read_config()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Setting up ngrok Endpoint")
+    ngrok.set_auth_token(conf['ngrok_auth_token'])
+    ngrok.forward(
+        addr=conf['port'],
+        domain=conf['ngrok_domain']
+    )
+    yield
+    logger.info("Tearing Down ngrok Endpoint")
+    ngrok.disconnect()
+
+app = FastAPI(title="CMPE 272 GitHub Issues Service", lifespan=lifespan)
+
+
 username = conf['github_owner']
 repository = conf['github_repo']
 token = conf['github_token']
