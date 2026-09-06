@@ -1,10 +1,20 @@
 # James
 from pydantic import BaseModel 
+from enum import StrEnum
+
+class IssueState(StrEnum):
+    OPEN = "open"
+    CLOSED = "closed"
 
 class NewIssue(BaseModel):
     title: str
     body: str
     labels: list[str]
+
+class UpdateIssue(BaseModel):
+    title: str
+    body: str
+    state: IssueState 
 
 class NewComment(BaseModel):
     body: str
@@ -17,12 +27,11 @@ class Comment(BaseModel):
     html_url: str
 
 class Issue(BaseModel):
-    id: int
-    title: str
+    number: int
+    html_url: str
+    state: IssueState
+    title: str 
     body: str
-    state: str
     labels: list[str]
     created_at: str
     updated_at: str
-    comments: list[Comment] = []
-    html_url: str
