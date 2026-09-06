@@ -1,2 +1,5 @@
-fastapi
+fastapi[standard]
 uvicorn
+PyGithub
+requests
+pydantic
