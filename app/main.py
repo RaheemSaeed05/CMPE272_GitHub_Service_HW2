@@ -1,10 +1,15 @@
-# Raheem, James, 
+# Raheem, James, Elias
 
 import logging
 import math
 import uuid
 from github import Github, Auth
+
 from fastapi import FastAPI, Request, Response, Query
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+
 from app import config
 import json
 from app.model import NewIssue, UpdateIssue, NewComment, IssueState
@@ -24,6 +29,17 @@ auth = Auth.Token(token)
 g = Github(auth=auth)
 user = g.get_user(username)
 repo = user.get_repo(repository)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "error": "invalid request", 
+            "message": "Invalid request payload", 
+            "details": jsonable_encoder(exc.errors())
+        }
+    )
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
