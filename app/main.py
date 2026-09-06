@@ -1,6 +1,7 @@
-# Raheem
+# Raheem, James, 
 
 import logging
+import math
 import uuid
 from github import Github, Auth
 from fastapi import FastAPI, Request, Response, Query
@@ -81,7 +82,7 @@ async def createIssue(issue: NewIssue, response: Response):
      200 OK → [{ number, title, state, labels, ... }], plus pagination headers.
 '''
 @app.get("/issues")
-def getIssues(state: str = "open", labels: str = None, page: int = Query(default=1, ge=1), per_page: int = Query(default=30, ge=1, le=100)):
+def getIssues(response: Response, state: str = "open", labels: str = None, page: int = Query(default=1, ge=1), per_page: int = Query(default=30, ge=1, le=100)):
     github_page = Github(auth=auth, per_page=per_page)
 
     repo_page = github_page.get_repo(f"{username}/{repository}")
@@ -100,6 +101,28 @@ def getIssues(state: str = "open", labels: str = None, page: int = Query(default
         github_issues = repo_page.get_issues(state=state, labels=label_objects)
     else:
         github_issues = repo_page.get_issues(state=state)
+
+    total_issues = github_issues.totalCount
+    last_page = max(1, math.ceil(total_issues / per_page))
+
+    links = []
+    if page > 1:
+        links.append(
+            f'<http://localhost:8000/issues?page={page - 1}&per_page={per_page}>; rel="prev"'
+        )
+    if page < last_page:
+        links.append(
+            f'<http://localhost:8000/issues?page={page + 1}&per_page={per_page}>; rel="next"'
+        )
+    links.append(
+        f'<http://localhost:8000/issues?page=1&per_page={per_page}>; rel="first"'
+    )
+
+    links.append(
+        f'<http://localhost:8000/issues?page={last_page}&per_page={per_page}>; rel="last"'
+    )
+
+    response.headers["Link"] = ", ".join(links)
 
     issues_page = github_issues.get_page(page - 1)
 
@@ -150,19 +173,35 @@ def getIssue(number: int):
    Responses: 200 OK; 400/404 on errors.
 '''
 @app.patch("/issues/{number}")
-def updateIssue(number: int, issue: IssueState = None):
+def updateIssue(number: int, issue: UpdateIssue):
     github_issue = repo.get_issue(number)
+
     updates = {}
+
     if issue.title is not None:
         updates["title"] = issue.title
     if issue.body is not None:
         updates["body"] = issue.body
     if issue.state is not None:
         updates["state"] = issue.state.value
+
     github_issue.edit(**updates)
+
     github_issue = repo.get_issue(number)
-    return {"message": f"Issue #{number} updated successfully"}
-     
+
+    return {
+        "number": github_issue.number,
+        "html_url": github_issue.html_url,
+        "state": github_issue.state,
+        "title": github_issue.title,
+        "body": github_issue.body,
+        "labels": [
+            label.name for label in github_issue.labels
+        ],
+        "created_at": github_issue.created_at,
+        "updated_at": github_issue.updated_at
+    }
+
 '''
 5) POST /issues/{number}/comments
    Body: { body: string }

@@ -12,9 +12,9 @@ class NewIssue(BaseModel):
     labels: list[str]
 
 class UpdateIssue(BaseModel):
-    title: str
-    body: str
-    state: IssueState 
+    title: str | None = None
+    body: str | None = None
+    state: IssueState | None = None
 
 class NewComment(BaseModel):
     body: str
