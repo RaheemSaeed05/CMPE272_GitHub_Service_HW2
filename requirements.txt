@@ -7,3 +7,4 @@ ngrok
 ruff
 pytest
 pytest-cov
+httpx2
