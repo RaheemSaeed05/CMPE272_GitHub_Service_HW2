@@ -34,5 +34,11 @@ jobs:
       - name: Run Pytest
         env:
           APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
+          APP_GITHUB_OWNER: ${{ secrets.APP_GITHUB_OWNER }}
+          APP_GITHUB_REPO: ${{ secrets.APP_GITHUB_REPO }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          PORT: ${{ secrets.PORT }}
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+          NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
         run: |
           pytest
