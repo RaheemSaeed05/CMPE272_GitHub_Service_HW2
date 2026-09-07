@@ -34,4 +34,5 @@ jobs:
       - name: Run Pytest
         env:
           APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
-        run: pytest
+        run: |
+          pytest
