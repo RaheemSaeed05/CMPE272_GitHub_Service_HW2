@@ -4,6 +4,7 @@ import logging
 import math
 import uuid
 from github import Github, Auth
+from app.webhook import router as webhook_router
 
 from fastapi import FastAPI, Request, Response, Query
 from fastapi.exceptions import RequestValidationError
@@ -33,6 +34,8 @@ async def lifespan(app: FastAPI):
     ngrok.disconnect()
 
 app = FastAPI(title="CMPE 272 GitHub Issues Service", lifespan=lifespan)
+app.include_router(webhook_router)
+
 
 
 username = conf['github_owner']
