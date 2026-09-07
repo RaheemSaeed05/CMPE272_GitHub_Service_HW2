@@ -3,7 +3,7 @@
 import logging
 import math
 import uuid
-from github import Github, Auth
+from contextlib import asynccontextmanager
 
 import ngrok
 from fastapi import FastAPI, Query, Request, Response
@@ -14,6 +14,7 @@ from github import Auth, Github
 
 from app import config
 from app.model import NewComment, NewIssue, UpdateIssue
+from app.webhook import webhook_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,8 +34,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="CMPE 272 GitHub Issues Service", lifespan=lifespan)
 app.include_router(webhook_router)
-
-
 
 username = conf['github_owner']
 repository = conf['github_repo']
