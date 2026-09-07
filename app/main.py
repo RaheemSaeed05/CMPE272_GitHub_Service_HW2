@@ -35,9 +35,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="CMPE 272 GitHub Issues Service", lifespan=lifespan)
 app.include_router(webhook_router)
 
-username = conf['github_owner']
-repository = conf['github_repo']
-token = conf['github_token']
+username = conf['app_github_owner']
+repository = conf['app_github_repo']
+token = conf['app_github_token']
 
 auth = Auth.Token(token)
 g = Github(auth=auth)
