@@ -5,7 +5,7 @@ import hmac
 import json
 import logging
 
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 
 from app import config
 from app.event_store import get_events, save_event
@@ -83,6 +83,8 @@ async def webhook(request: Request):
     return Response(status_code=204)
 
 
+# Liuyiyi Jin — expose the most recent webhook deliveries for debugging.
+
 @router.get("/events")
-def events():
-    return get_events()
+def events(limit: int = Query(default=20, ge=1, le=100)):
+    return get_events(limit)
