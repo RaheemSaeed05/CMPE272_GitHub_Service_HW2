@@ -3,18 +3,17 @@
 import logging
 import math
 import uuid
-from github import Github, Auth
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, Response, Query
+import ngrok
+from fastapi import FastAPI, Query, Request, Response
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
+from github import Auth, Github
 
 from app import config
-import json
-from app.model import NewIssue, UpdateIssue, NewComment, IssueState
-from contextlib import asynccontextmanager
-import ngrok
+from app.model import NewComment, NewIssue, UpdateIssue
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -112,7 +111,7 @@ async def createIssue(issue: NewIssue, response: Response):
      200 OK → [{ number, title, state, labels, ... }], plus pagination headers.
 '''
 @app.get("/issues")
-def getIssues(response: Response, state: str = "open", labels: str = None, page: int = Query(default=1, ge=1), per_page: int = Query(default=30, ge=1, le=100)):
+def getIssues(response: Response, state: str = "open", labels: str | None = None, page: int = Query(default=1, ge=1), per_page: int = Query(default=30, ge=1, le=100)):
     github_page = Github(auth=auth, per_page=per_page)
 
     repo_page = github_page.get_repo(f"{username}/{repository}")
@@ -156,7 +155,7 @@ def getIssues(response: Response, state: str = "open", labels: str = None, page:
 
     issues_page = github_issues.get_page(page - 1)
 
-    all_issues = list()
+    all_issues = []
 
     for item in issues_page:
         all_issues.append({

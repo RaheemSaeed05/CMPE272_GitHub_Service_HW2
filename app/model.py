@@ -1,6 +1,8 @@
 # James
-from pydantic import BaseModel 
 from enum import StrEnum
+
+from pydantic import BaseModel
+
 
 class IssueState(StrEnum):
     OPEN = "open"
