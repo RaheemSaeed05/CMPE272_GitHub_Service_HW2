@@ -13,8 +13,6 @@ on:
 jobs:
   testing:
     runs-on: ubuntu-latest
-    env:
-      APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
     strategy:
       matrix:
         python-version: ["3.14"]
@@ -34,4 +32,6 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Run Pytest
+        env:
+          APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
         run: pytest
