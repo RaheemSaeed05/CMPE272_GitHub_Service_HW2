@@ -26,5 +26,6 @@ def save_event(delivery_id, event, action, issue_number):
     return True
 
 
-def get_events():
-    return events
+# Liuyiyi Jin — return only the most recent webhook deliveries for debugging.
+def get_events(limit: int = 20):
+    return list(reversed(events[-limit:]))
