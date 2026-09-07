@@ -403,6 +403,10 @@ issues
 issue_comment
 ping
 ```
+The service only accepts the webhook actions supported by the application. Unsupported actions return:
+
+```text
+400 Bad Request
 
 A valid webhook returns:
 
@@ -548,6 +552,10 @@ To redeliver a webhook:
 7. Confirm the redelivery.
 
 The service uses the GitHub delivery ID and action to prevent duplicate webhook events from being stored multiple times.
+
+If the same GitHub delivery is redelivered with the same action, it is treated as a duplicate and is not stored again. Deliveries with different delivery IDs or actions are stored separately.
+
+Deduplication is kept in memory, so the deduplication history is cleared when the application restarts.
 
 If the same delivery is received again, it is ignored but still returns:
 
