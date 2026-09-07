@@ -8,3 +8,4 @@ ruff
 pytest
 pytest-cov
 httpx2
+pytest-httpx
