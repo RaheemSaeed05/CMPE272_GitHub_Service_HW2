@@ -22,15 +22,22 @@ conf = config.read_config()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Setting up ngrok Endpoint")
-    ngrok.set_auth_token(conf['ngrok_auth_token'])
-    ngrok.forward(
-        addr=conf['port'],
-        domain=conf['ngrok_domain']
-    )
+    ngrok_token = conf['ngrok_auth_token']
+    ngrok_domain = conf['ngrok_domain']
+
+    if ngrok_token and ngrok_domain:
+        logger.info("Setting up ngrok Endpoint")
+        ngrok.set_auth_token(ngrok_token)
+        ngrok.forward(
+            addr=conf['port'],
+            domain=conf['ngrok_domain']
+        )
+    else:
+        logger.info("Ngrok not configured. Skipping ngrok setup.")
     yield
-    logger.info("Tearing Down ngrok Endpoint")
-    ngrok.disconnect()
+    if ngrok_token and ngrok_domain:
+        logger.info("Tearing Down ngrok Endpoint")
+        ngrok.disconnect()
 
 app = FastAPI(title="CMPE 272 GitHub Issues Service", lifespan=lifespan)
 app.include_router(webhook_router)
