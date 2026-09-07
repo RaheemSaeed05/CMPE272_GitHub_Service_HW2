@@ -2,12 +2,11 @@ import httpx
 
 from app import config
 
-
 conf = config.read_config()
 
-GITHUB_OWNER = conf["github_owner"]
-GITHUB_REPO = conf["github_repo"]
-GITHUB_TOKEN = conf["github_token"]
+GITHUB_OWNER = conf["app_github_owner"]
+GITHUB_REPO = conf["app_github_repo"]
+GITHUB_TOKEN = conf["app_github_token"]
 
 
 BASE_URL = "https://api.github.com"

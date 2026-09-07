@@ -1,17 +1,16 @@
-from fastapi.testclient import TestClient
 import asyncio
-import app.main as main
-from app import client as github_client
 import hashlib
 import hmac
 import json
-from fastapi import FastAPI
-from app import webhook as webhook_module
-import pytest
 from datetime import datetime
-from app import event_store
 
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
+from app import client as github_client
+from app import event_store, main
+from app import webhook as webhook_module
 from tests.mocks import MockIssue, MockRepo
 
 api_client = TestClient(main.app)
