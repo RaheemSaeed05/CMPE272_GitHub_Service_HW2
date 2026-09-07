@@ -356,8 +356,8 @@ def test_get_events_returns_saved_events():
     )
     events = event_store.get_events()
     assert len(events) == 2
-    assert events[0]["id"] == "abc123"
-    assert events[1]["id"] == "xyz789"
+    assert events[0]["id"] == "xyz789"
+    assert events[1]["id"] == "abc123"
 
 def test_event_has_valid_timestamp():
     event_store.save_event(

@@ -65,6 +65,32 @@ Then run:
 ```
 ---
 
+### Run the Tests
+
+Make sure the virtual environment is active before running the tests.
+
+Run all unit tests:
+
+```bash
+pytest -v
+```
+
+Run the tests with coverage:
+
+```bash
+pytest --cov=app --cov-report=term-missing
+```
+
+To generate an HTML coverage report:
+```bash
+pytest --cov=app --cov-report=html
+```
+
+Then open:
+```bash
+htmlcov/index.html
+```
+
 ## 2. Environment Variable Setup and Scopes Used
 
 Create a `.env` file in the root directory of the project.
