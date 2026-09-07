@@ -37,7 +37,7 @@ jobs:
           APP_GITHUB_OWNER: ${{ secrets.APP_GITHUB_OWNER }}
           APP_GITHUB_REPO: ${{ secrets.APP_GITHUB_REPO }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-          PORT: "8000"
+          PORT: "${{ secrets.PORT }}"
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
           NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
         run: |
