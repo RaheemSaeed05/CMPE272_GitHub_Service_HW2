@@ -4,3 +4,6 @@ PyGithub
 requests
 pydantic
 ngrok
+ruff
+pytest
+pytest-cov

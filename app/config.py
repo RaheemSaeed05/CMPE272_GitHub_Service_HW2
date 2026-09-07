@@ -1,7 +1,9 @@
 # Author, Raheem Saeed, Load the environment variables 
 
 import os
+
 from dotenv import load_dotenv
+
 
 def read_config():
     load_dotenv()

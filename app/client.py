@@ -1,11 +1,7 @@
 # James 
 import httpx
 
-from app.config import (
-    GITHUB_TOKEN, 
-    GITHUB_OWNER, 
-    GITHUB_REPO, 
-)
+from app.config import GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN
 
 BASE_URL = "https://api.github.com"
 

@@ -10,7 +10,7 @@ from fastapi import APIRouter, HTTPException, Query, Request, Response
 from app import config
 from app.event_store import get_events, save_event
 
-router = APIRouter()
+webhook_router = APIRouter()
 logger = logging.getLogger(__name__)
 
 ALLOWED_ACTIONS = {
@@ -41,7 +41,7 @@ def valid_signature(body: bytes, signature: str | None):
     return hmac.compare_digest(expected, signature)
 
 
-@router.post("/webhook")
+@webhook_router.post("/webhook")
 async def webhook(request: Request):
     body = await request.body()
 
@@ -85,6 +85,8 @@ async def webhook(request: Request):
 
 # Liuyiyi Jin — expose the most recent webhook deliveries for debugging.
 
-@router.get("/events")
+@webhook_router.get("/events")
 def events(limit: int = Query(default=20, ge=1, le=100)):
     return get_events(limit)
+
+
